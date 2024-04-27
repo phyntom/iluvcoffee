@@ -8,8 +8,12 @@ import {
   HttpCode,
   Patch,
   Delete,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { CoffeesService } from './coffees.service';
+import { CreateCoffeeDto } from './dto/create-coffee.dto';
+import { UpdateCoffeeDto } from './dto/update-coffee.dto';
+import { ValidationPipe } from '@nestjs/common';
 
 @Controller('coffees')
 export class CoffeesController {
@@ -21,17 +25,20 @@ export class CoffeesController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id', new ParseUUIDPipe()) id: string) {
     return await this.coffeesService.findOne(id);
   }
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() body: any) {
-    return await this.coffeesService.create(body);
+  async create(@Body() createCoffeeDto: CreateCoffeeDto) {
+    return await this.coffeesService.create(createCoffeeDto);
   }
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() body: any) {
-    return await this.coffeesService.update(id, body);
+  async update(
+    @Param('id') id: string,
+    @Body() updateCoffeeDto: UpdateCoffeeDto,
+  ) {
+    return await this.coffeesService.update(id, updateCoffeeDto);
   }
 
   @Delete(':id')

@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { Coffee } from './entities/coffee.entity';
 import { randomUUID } from 'crypto';
+import { CreateCoffeeDto } from './dto/create-coffee.dto';
 
 @Injectable()
 export class CoffeesService {
@@ -26,7 +27,7 @@ export class CoffeesService {
     return existingCoffee;
   }
 
-  async create(createCoffeeDto: any): Promise<Coffee> {
+  async create(createCoffeeDto: CreateCoffeeDto): Promise<Coffee> {
     const createdCoffee = new Coffee(
       randomUUID(),
       createCoffeeDto.name,
