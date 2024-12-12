@@ -26,11 +26,12 @@ export class CoffeesController {
   constructor(private coffeeService: CoffeesService) {}
 
   @Get()
-  findAll(): Coffee[] {
+  async findAll(): Promise<Coffee[]> {
     // Express.js example using status code and send method`
     // return res.status(200).send('This action returns all coffees');
     // const { limit, offset } = paginationQuery
-    return this.coffeeService.findAll()
+    const coffees = await this.coffeeService.findAll()
+    return coffees
   }
 
   @Get(':id')
@@ -52,12 +53,12 @@ export class CoffeesController {
     }
   }
   @Patch(':id')
-  update(
+  async update(
     @Param('id', new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }))
     id: number,
     @Body() body: UpdateCoffeeDto,
-  ): Coffee {
-    const updatedCoffee = this.coffeeService.update(id, body)
+  ) {
+    const updatedCoffee = await this.coffeeService.update(id, body)
 
     if (updatedCoffee) {
       return updatedCoffee
