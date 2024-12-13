@@ -27,11 +27,7 @@ export class CoffeesController {
 
   @Get()
   async findAll(): Promise<Coffee[]> {
-    // Express.js example using status code and send method`
-    // return res.status(200).send('This action returns all coffees');
-    // const { limit, offset } = paginationQuery
-    const coffees = await this.coffeeService.findAll()
-    return coffees
+    return await this.coffeeService.findAll()
   }
 
   @Get(':id')
@@ -59,7 +55,6 @@ export class CoffeesController {
     @Body() body: UpdateCoffeeDto,
   ) {
     const updatedCoffee = await this.coffeeService.update(id, body)
-
     if (updatedCoffee) {
       return updatedCoffee
     } else {
@@ -67,7 +62,10 @@ export class CoffeesController {
     }
   }
   @Delete(':id')
-  remove(@Param('id', new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) id: number) {
+  remove(
+    @Param('id', new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }))
+    id: number,
+  ) {
     const removedCoffee = this.coffeeService.remove(id)
 
     if (removedCoffee) {
