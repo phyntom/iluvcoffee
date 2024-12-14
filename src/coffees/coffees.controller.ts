@@ -1,16 +1,16 @@
 import {
   Body,
   Controller,
-  Get,
-  HttpStatus,
-  Param,
-  Patch,
-  Post,
   Delete,
-  ParseIntPipe,
+  Get,
   HttpException,
-  NotFoundException,
+  HttpStatus,
   InternalServerErrorException,
+  NotFoundException,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post, Query,
 } from '@nestjs/common'
 
 import { CoffeesService } from './coffees.service'
@@ -20,14 +20,16 @@ import { Coffee } from 'src/entities/coffee.entity'
 import { CreateCoffeeDto } from './dto/create-coffee.dto'
 
 import { UpdateCoffeeDto } from './dto/update-coffee.dto'
+import { PaginationQueryDto } from '../common/pagination-query.dto'
 
 @Controller('coffees')
 export class CoffeesController {
-  constructor(private coffeeService: CoffeesService) {}
+  constructor(private coffeeService: CoffeesService) {
+  }
 
   @Get()
-  async findAll(): Promise<Coffee[]> {
-    return await this.coffeeService.findAll()
+  async findAll(@Query() paginationQuery: PaginationQueryDto): Promise<Coffee[]> {
+    return await this.coffeeService.findAll(paginationQuery)
   }
 
   @Get(':id')
@@ -48,6 +50,7 @@ export class CoffeesController {
       throw new InternalServerErrorException(err.message)
     }
   }
+
   @Patch(':id')
   async update(
     @Param('id', new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }))
@@ -61,6 +64,7 @@ export class CoffeesController {
       throw new NotFoundException(`Coffee #${id} not found`)
     }
   }
+
   @Delete(':id')
   remove(
     @Param('id', new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }))
